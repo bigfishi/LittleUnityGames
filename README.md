@@ -15,3 +15,13 @@ little games by Unity.
 - 蹚坑
 	- 修改了Snake.cs，运行游戏不生效，原来是没附加到游戏对象中
 	- 添加物理碰撞触发函数，不生效，发现是函数写错了，争取的函数是OnTriggerEnter2D，我写的OTriggerEnter2D
+
+## PingPang
+- 简单的2D乒乓球游戏
+- [参考链接](https://www.bilibili.com/video/BV1kM4y197Uy?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- 按键判断
+	- 刚体、施加外力、物理纹理、弹性、质量、阻力等
+	- 纹理和材质
+- 蹚坑
+	- 无
