@@ -25,3 +25,17 @@ little games by Unity.
 	- 纹理和材质
 - 蹚坑
 	- 无
+
+## Minesweeper
+- 扫雷游戏
+- [参考链接](https://www.bilibili.com/video/BV1gk4y187mZ?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- 鼠标按键判断，按键位置转换为世界坐标，世界坐标转换为TileMap的cell坐标
+	- TileMap sprite图片的设置，创建TileMap的Tile
+	- struct定义，二维数组使用，列表容器List使用
+	- 只读属性
+	- Unity脚本属性的校验 OnValidate函数和 Mathf.clamp
+	- 从子节点获取组件
+	- 相机位置的移动
+	- 洗牌算法
+	- 扫雷逻辑
