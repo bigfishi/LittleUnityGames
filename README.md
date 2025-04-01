@@ -55,3 +55,31 @@ little games by Unity.
 	- 修改成Android项目，使用手势识别控制
 - 蹚坑
 	- 显示的2，不是很清晰
+
+## Asteroids
+- 行星游戏
+- [功能参考](https://www.bilibili.com/video/BV1pM411i7Yp?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- thrusting 向前进 2d游戏是 trasform.up 3D游戏是 transform.forward
+	- 转向
+	- 陨石的欧拉角
+	- 子弹 延时删除 Destroy(gameObject, 10.0f);
+	- InvokeRepeating(nameof(Spawn), this.spawnRate, this.spawnRate); // 循环调用Spawn函数
+	- trajectory 
+	- 直接调用GameManager（不建议使用） FindObjectOfType<GameManager>().PlayerDied();
+	- 修改刚体的Layer this.player.gameObject.layer = LayerMask.NameToLayer("Ignore Collisions");
+	- 例子特效
+- 蹚坑
+
+## Bomberman
+- 炸弹人
+- [功能参考](https://www.bilibili.com/video/BV1FW4y1R7Vk?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- Sprite的Multi模式，可以作为精灵集拆分多个精灵
+	- Tilemap 绘制模式
+	- Tilemap Collider 2D
+	- Sorting Layer -> Order in Layer 层级关系
+	- MovementController.cs 中定义的 刚体 rigidbody 与 父类 MonoBehaviour 中的属性同名了，可以将定义改为 public new Regidbody2D { get; private set; } 防止警告，即添加一个new关键词
+	- MovementController.cs 中定义按键 public KeyCode inputUp = KeyCode.W; 可以在编辑器中修改，嗯，很方便
+	- AnimatedSpriteRenderer 帧动画，通过 InvokeRepeating(nameof(NextFrame), animationTime, animationTime); 实现
+	- PlaceBomb 协程
