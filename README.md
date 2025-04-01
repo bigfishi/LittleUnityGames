@@ -39,3 +39,19 @@ little games by Unity.
 	- 相机位置的移动
 	- 洗牌算法
 	- 扫雷逻辑
+
+## 2048
+- 2048
+- [参考链接](https://www.bilibili.com/video/BV1y8411f7xt?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- sprite 修改修改九宫配置，Sprite->Sprite Editor 修改border
+	- Package Manager 使用
+	- TextMesh Pro添加 Window->TextMeshPro->Import TMP Essential Resources，确定导入，会自动在Assets中添加TextMesh Pro资源
+	- 生成Font Asset 全选所有ttf文件，右键->Create->TextMeshPro->Font Asset（Shift+Ctrl+F12）
+	- Canvas介绍以及适配说明，创建Canvas会自动创建EventSystem，用于处理UI相关事件
+	- 布局管理 Horizontal Layout Group
+	- 预制体的创建和使用
+	- 创建ScriptableObject类型的脚本对象，不挂载在GameObject上，可以在Unity中创建这种类型的脚本
+	- 修改成Android项目，使用手势识别控制
+- 蹚坑
+	- 显示的2，不是很清晰
