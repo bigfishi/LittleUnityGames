@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class Tile : MonoBehaviour
 {
@@ -82,7 +81,7 @@ public class Tile : MonoBehaviour
     private IEnumerator Animate(Vector3 to, bool merging)
     {
         float elapsed = 0f;
-        float duration = 0.1f;
+        float duration = GameManager.Instance.tileMoveDuration;
 
         Vector3 from = transform.position;
 

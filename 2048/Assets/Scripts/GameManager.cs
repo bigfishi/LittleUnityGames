@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -18,6 +17,8 @@ public class GameManager : MonoBehaviour
     public DestroyHammer hammer;
 
     private int score;
+
+    public float tileMoveDuration = 0.2f;
 
     void Awake()
     {
@@ -111,17 +112,21 @@ public class GameManager : MonoBehaviour
 
     public void OnBtnHammerClick()
     {
+        // 隐藏锤子按钮
+        btnHammer.gameObject.SetActive(false);
         board.SetHammerState(true);
         // 进入抡锤状态，暂停游戏棋盘逻辑，高亮有数字的位置，点击空白区域退出抡锤状态，继续棋盘逻辑，点击数字，从锤子位置播放炸弹人拿着锤子跑到数字位置，执行锤子旋转动画，隐藏炸弹人和锤子，然后消除数字，继续棋盘逻辑
     }
 
     // 显示锤子移动，砸在cell上，消除cell
     public void HammerHitCell(Tile tile) {
-        // 隐藏锤子按钮
-        btnHammer.gameObject.SetActive(false);
         // 显示锤子，并移动到tile 锤子执行旋转的动画
         hammer.gameObject.SetActive(true);
-        hammer.PlayHitAnimation(tile.gameObject.transform.position);
+        
+        RectTransform tileTransform = tile.GetComponent<RectTransform>();
+        float width = tileTransform.rect.width;
+        float height = tileTransform.rect.height;
+        hammer.PlayHitAnimation(tile.gameObject.transform.position + new Vector3(width, -height/2f, 0));
         // 删除tile
         StartCoroutine(HitTile(tile));
 
@@ -148,11 +153,22 @@ public class GameManager : MonoBehaviour
 
     // 锤子结束
     public void OnHammerHitEnd() {
-        board.SetHammerHitting(false, null);
+        board.SetHammerHitting(null);
         board.SetHammerState(false);
 
         btnHammer.gameObject.SetActive(true);
         hammer.transform.position = btnHammer.transform.position;
+        hammer.gameObject.SetActive(false);
+    }
+
+    // 锤子取消
+    public void OnHammerHitCancel()
+    {
+        board.SetHammerState(false);
+
+        btnHammer.gameObject.SetActive(true);
+        hammer.transform.position = btnHammer.transform.position;
+        hammer.transform.rotation = Quaternion.identity;
         hammer.gameObject.SetActive(false);
     }
 }

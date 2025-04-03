@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TileBoard : MonoBehaviour
@@ -17,7 +15,6 @@ public class TileBoard : MonoBehaviour
     private bool waiting;
 
     public bool hammerStete;
-    public bool hammerHitting;
 
     private enum Orient {
         Unknown,
@@ -64,6 +61,11 @@ public class TileBoard : MonoBehaviour
     {
         if (hammerStete) {
             CheckHammerPosition();
+            
+            // 测试的时候，使用模拟器，也可以检测到触摸
+            if (Application.platform == RuntimePlatform.Android) {
+                CheckHammerPositionByTouch();
+            }
             return;
         }
         if (waiting) {
@@ -81,6 +83,37 @@ public class TileBoard : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || orient == Orient.Right) {
             MoveTiles(Vector2Int.right, grid.width -2, -1, 0, 1);
+        }
+    }
+
+    private void CheckHammerPositionByTouch()
+    {
+        if (!hammerStete) {
+            return;
+        }
+        Vector2 touchPosition = Vector2.zero;
+        // 检查是否有触摸输入
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0); // 获取第一个触摸点
+            if (touch.phase == TouchPhase.Began)
+            {
+                touchPosition = touch.position; // 记录触摸开始位置
+            }
+        }
+        if (!touchPosition.Equals(Vector2.zero))
+        {
+            Tile targetTile = null;
+            foreach (var tile in tiles)
+            {
+                RectTransform tileTransform = tile.GetComponent<RectTransform>();
+                if (RectTransformUtility.RectangleContainsScreenPoint(tileTransform, touchPosition))
+                {
+                    targetTile = tile;
+                    break;
+                }
+            }
+            SetHammerHitting(targetTile);
         }
     }
 
@@ -102,11 +135,7 @@ public class TileBoard : MonoBehaviour
                     break;
                 }
             }
-            if (targetTile == null) {
-                SetHammerState(false);
-            } else {
-                SetHammerHitting(true, targetTile);
-            }
+            SetHammerHitting(targetTile);
         }
     }
 
@@ -120,6 +149,7 @@ public class TileBoard : MonoBehaviour
     {
         // Debug.Log("GetOrient Input.touchCount=" + Input.touchCount);
  
+        Orient orient = Orient.Unknown;
         // 检查是否有触摸输入
         if (Input.touchCount > 0)
         {
@@ -141,31 +171,36 @@ public class TileBoard : MonoBehaviour
                         if (direction.x > 0)
                         {
                             Debug.Log("右滑"); // 右滑处理
-                            return Orient.Right;
+                            orient = Orient.Right;
                         }
                         else if (direction.x < 0)
                         {
                             Debug.Log("左滑"); // 左滑处理
-                            return Orient.Left;
+                            orient = Orient.Left;
                         }
                     }
                     else if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x)) {
                         if (direction.y > 0)
                         {
                             Debug.Log("上滑");
-                            return Orient.Up;
+                            orient = Orient.Up;
                         }
                         else if (direction.y < 0)
                         {
                             Debug.Log("下滑");
-                            return Orient.Down;
+                            orient = Orient.Down;
                         }
                     }
                 }
+                startPosition = Vector2.zero;
+                isDragging = false; // 重置拖动状态
+            }
+            else if (touch.phase == TouchPhase.Canceled) {
+                startPosition = Vector2.zero;
                 isDragging = false; // 重置拖动状态
             }
         }
-        return Orient.Unknown;
+        return orient;
     }
 
     private void MoveTiles(Vector2Int direction, int startX, int incrementX, int startY, int incrementY)
@@ -181,6 +216,9 @@ public class TileBoard : MonoBehaviour
                     changed |= MoveTile(cell.tile, direction);
                 }
             }
+        }
+        if (tiles.Count == 0) {
+            changed = true;
         }
 
         if (changed)
@@ -252,7 +290,7 @@ public class TileBoard : MonoBehaviour
     {
         waiting = true;
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(GameManager.Instance.tileMoveDuration);
 
         waiting = false;
 
@@ -330,17 +368,16 @@ public class TileBoard : MonoBehaviour
         }
     }
 
-    public void SetHammerHitting(bool b, Tile targetTile) {
-        hammerHitting = b;
-        if (hammerHitting) {
-            foreach (var tile in tiles)
-            {
-                tile.StopScaleAnimation();
-            }
+    public void SetHammerHitting(Tile targetTile) {
+        foreach (var tile in tiles)
+        {
+            tile.StopScaleAnimation();
+        }
+        if (targetTile != null) {
             // 显示锤子移动，砸在cell上，消除cell
             GameManager.Instance.HammerHitCell(targetTile);
         } else {
-            SetHammerState(false);
+            GameManager.Instance.OnHammerHitCancel();
         }
     }
 
