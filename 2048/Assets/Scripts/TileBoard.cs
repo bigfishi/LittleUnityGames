@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ public class TileBoard : MonoBehaviour
     private List<Tile> tiles;
 
     private bool waiting;
+
+    public bool hammerStete;
+    public bool hammerHitting;
 
     private enum Orient {
         Unknown,
@@ -58,6 +62,10 @@ public class TileBoard : MonoBehaviour
 
     void Update()
     {
+        if (hammerStete) {
+            CheckHammerPosition();
+            return;
+        }
         if (waiting) {
             return;
         }
@@ -74,6 +82,38 @@ public class TileBoard : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || orient == Orient.Right) {
             MoveTiles(Vector2Int.right, grid.width -2, -1, 0, 1);
         }
+    }
+
+    private void CheckHammerPosition()
+    {
+        if (!hammerStete) {
+            return;
+        }
+        if (Input.GetMouseButtonDown(0)) // 检测到鼠标左键点击
+        {
+            Tile targetTile = null;
+            Vector2 mousePos = Input.mousePosition;
+            foreach (var tile in tiles)
+            {
+                RectTransform tileTransform = tile.GetComponent<RectTransform>();
+                if (RectTransformUtility.RectangleContainsScreenPoint(tileTransform, mousePos))
+                {
+                    targetTile = tile;
+                    break;
+                }
+            }
+            if (targetTile == null) {
+                SetHammerState(false);
+            } else {
+                SetHammerHitting(true, targetTile);
+            }
+        }
+    }
+
+    public void RemoveTile(Tile tile)
+    {
+        tile.DestroyCell();
+        tiles.Remove(tile);
     }
 
     private Orient GetOrient()
@@ -260,6 +300,48 @@ public class TileBoard : MonoBehaviour
             }
         }
         return true;
+    }
+
+    // 设置锤子状态
+    public void SetHammerState(bool b) {
+        hammerStete = b;
+
+        if (hammerStete) { // 暂停格子合并和按键监听，高亮有数字的格子
+            // 高亮格子
+            StartCoroutine(HighlightTileCell());
+        }
+        else {
+            foreach (var tile in tiles)
+            {
+                tile.StopScaleAnimation();
+            }
+        }
+    }
+    
+    public IEnumerator HighlightTileCell()
+    {
+        while (waiting) {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        foreach (var tile in tiles)
+        {
+            tile.RunScaleAnimation(Vector3.one * 1.2f);
+        }
+    }
+
+    public void SetHammerHitting(bool b, Tile targetTile) {
+        hammerHitting = b;
+        if (hammerHitting) {
+            foreach (var tile in tiles)
+            {
+                tile.StopScaleAnimation();
+            }
+            // 显示锤子移动，砸在cell上，消除cell
+            GameManager.Instance.HammerHitCell(targetTile);
+        } else {
+            SetHammerState(false);
+        }
     }
 
 }

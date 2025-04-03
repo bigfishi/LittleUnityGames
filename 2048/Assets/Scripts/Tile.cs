@@ -69,6 +69,16 @@ public class Tile : MonoBehaviour
         StartCoroutine(Animate(cell.transform.position, true));
     }
 
+    public void DestroyCell()
+    {
+        if (this.cell != null) {
+            this.cell.tile = null;
+        }
+
+        this.cell = null;
+        DestroyImmediate(gameObject);
+    }
+
     private IEnumerator Animate(Vector3 to, bool merging)
     {
         float elapsed = 0f;
@@ -88,5 +98,33 @@ public class Tile : MonoBehaviour
         if (merging) {
             Destroy(gameObject);
         }
+    }
+
+    public void RunScaleAnimation(Vector3 to) {
+        StartCoroutine(ScaleAnimate(to, Vector3.one));
+    }
+
+    private IEnumerator ScaleAnimate(Vector3 to, Vector3 nextTo)
+    {
+        float elapsed = 0f;
+        float duration = 0.3f;
+
+        Vector3 from = transform.localScale;
+
+        while (elapsed < duration)
+        {
+            transform.localScale = Vector3.Lerp(from, to, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = to;
+
+        StartCoroutine(ScaleAnimate(nextTo, to));
+    }
+
+    public void StopScaleAnimation() {
+        StopAllCoroutines();
+        transform.localScale = Vector3.one;
     }
 }
