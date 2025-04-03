@@ -61,12 +61,13 @@ little games by Unity.
 - [功能参考](https://www.bilibili.com/video/BV1pM411i7Yp?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
 - 功能说明
 	- thrusting 向前进 2d游戏是 trasform.up 3D游戏是 transform.forward
-	- 转向
+	- 转向 torque 恒定力矩，可使物体进行匀速旋转
 	- 陨石的欧拉角
 	- 子弹 延时删除 Destroy(gameObject, 10.0f);
 	- InvokeRepeating(nameof(Spawn), this.spawnRate, this.spawnRate); // 循环调用Spawn函数
 	- trajectory 
 	- 直接调用GameManager（不建议使用） FindObjectOfType<GameManager>().PlayerDied();
+		- 直接使用单例处理
 	- 修改刚体的Layer this.player.gameObject.layer = LayerMask.NameToLayer("Ignore Collisions");
 	- 例子特效
 - 蹚坑
@@ -83,3 +84,10 @@ little games by Unity.
 	- MovementController.cs 中定义按键 public KeyCode inputUp = KeyCode.W; 可以在编辑器中修改，嗯，很方便
 	- AnimatedSpriteRenderer 帧动画，通过 InvokeRepeating(nameof(NextFrame), animationTime, animationTime); 实现
 	- PlaceBomb 协程
+
+## Centipede
+- 大蜈蚣
+- [功能参考](https://www.bilibili.com/video/BV1v8411f7dq?spm_id_from=333.788.player.switch&vd_source=f33a259cffbdc537ff6ba43e110937bf)
+- 功能说明
+	- 控制方向，使用Unity内置的方向`Input.getAxis("Horizontal");` Project Settings->Input Manager->Axes ->Horizontal  包括WSAD 方向键 鼠标等
+- 蹚坑
