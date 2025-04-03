@@ -77,13 +77,21 @@ little games by Unity.
 - [功能参考](https://www.bilibili.com/video/BV1FW4y1R7Vk?spm_id_from=333.788.videopod.sections&vd_source=f33a259cffbdc537ff6ba43e110937bf)
 - 功能说明
 	- Sprite的Multi模式，可以作为精灵集拆分多个精灵
+	- Tilemap tile修改碰撞类型， Collider Type 草地改为 None
 	- Tilemap 绘制模式
 	- Tilemap Collider 2D
 	- Sorting Layer -> Order in Layer 层级关系
+	- Player->Rigidbody 2D->Collision Detection->Continuous 改为连续检测
 	- MovementController.cs 中定义的 刚体 rigidbody 与 父类 MonoBehaviour 中的属性同名了，可以将定义改为 public new Regidbody2D { get; private set; } 防止警告，即添加一个new关键词
 	- MovementController.cs 中定义按键 public KeyCode inputUp = KeyCode.W; 可以在编辑器中修改，嗯，很方便
 	- AnimatedSpriteRenderer 帧动画，通过 InvokeRepeating(nameof(NextFrame), animationTime, animationTime); 实现
 	- PlaceBomb 协程
+- 蹚坑
+	- Player 初始化后，会向下移动0.1Unit
+		- 参考项目也有
+		- 由于Player身上的MovementController.directoin==down，FixedUpdate会执行一次下移，然后Update根据输入，将direction改为zero，下次不再移动，也就是说执行了一次固定时间的下移(FixedUpdate的0.025左右)，导致了开局就下移一次
+	- 炸弹爆炸图片，右侧有间隙
+		- 对比参考项目，未发现区别
 
 ## Centipede
 - 大蜈蚣
