@@ -97,5 +97,5 @@ little games by Unity.
 - 大蜈蚣
 - [功能参考](https://www.bilibili.com/video/BV1v8411f7dq?spm_id_from=333.788.player.switch&vd_source=f33a259cffbdc537ff6ba43e110937bf)
 - 功能说明
-	- 控制方向，使用Unity内置的方向`Input.getAxis("Horizontal");` Project Settings->Input Manager->Axes ->Horizontal  包括WSAD 方向键 鼠标等
+	- 控制方向，使用Unity内置的方向`Input.getAxis("Horizontal");` Project Settings->Input Manager->Axes ->Horizontal  包括WSAD 方向键 鼠标等，修改Gravity和Sensitivity 3->1000，让操作即时生效
 - 蹚坑
